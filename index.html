@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Agentic HCI Reader — A Self-Directed Syllabus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F4F2EC;
+    --ink: #20241D;
+    --stone: #77786C;
+    --pen: #2743C6;
+    --wash: rgba(240, 227, 130, 0.55);
+    --rule: #D9D6C9;
+    --card: #FBFAF6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--pen);
+    outline-offset: 3px;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- Masthead ---------- */
+  header.masthead { padding: 72px 0 40px; border-bottom: 1px solid var(--ink); }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--stone);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 10vw, 58px);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+  }
+  h1 .agentic {
+    font-style: italic;
+    font-weight: 400;
+    position: relative;
+    white-space: nowrap;
+  }
+  h1 .agentic::after {
+    content: "";
+    position: absolute;
+    left: -0.06em; right: -0.06em;
+    bottom: 0.08em;
+    height: 0.42em;
+    background: var(--wash);
+    z-index: -1;
+  }
+  .deck {
+    margin-top: 26px;
+    max-width: 58ch;
+    font-size: 20px;
+    line-height: 1.55;
+  }
+  .deck em { font-style: italic; }
+  .fieldnote {
+    margin-top: 22px;
+    padding-left: 18px;
+    border-left: 2px solid var(--pen);
+    color: var(--pen);
+    font-size: 16px;
+    max-width: 62ch;
+    line-height: 1.5;
+  }
+  .fieldnote strong { font-weight: 500; }
+
+  /* ---------- Progress ---------- */
+  .progress {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--stone);
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    z-index: 5;
+  }
+  .progress b { color: var(--ink); font-weight: 500; }
+  .progress-note { display: none; }
+
+  /* ---------- Sections ---------- */
+  section.week { padding: 56px 0 8px; }
+  .week-head { display: flex; align-items: baseline; gap: 20px; margin-bottom: 8px; }
+  .week-no {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pen);
+    white-space: nowrap;
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(26px, 4vw, 36px);
+    letter-spacing: -0.01em;
+  }
+  .week-intro { color: var(--stone); font-size: 17px; max-width: 60ch; margin-bottom: 12px; }
+
+  /* ---------- Entries ---------- */
+  ol.readings { list-style: none; counter-reset: seq var(--seq-start, 0); }
+  .entry {
+    counter-increment: seq;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 0 16px;
+    padding: 26px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .entry:first-child { border-top: none; }
+  .seq {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 1;
+    color: var(--stone);
+    padding-top: 4px;
+  }
+  .seq::before { content: counter(seq, decimal-leading-zero); }
+  .entry-body { min-width: 0; }
+  .entry h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+  }
+  .entry h3 a { text-decoration: none; border-bottom: 1px solid transparent; }
+  .entry h3 a:hover { border-bottom-color: var(--ink); }
+  .meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--stone);
+    margin: 6px 0 10px;
+  }
+  .meta .tag {
+    color: var(--pen);
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 1px 9px;
+    margin-left: 8px;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  .why { max-width: 62ch; font-size: 17px; }
+  .why mark { background: var(--wash); color: inherit; padding: 0 2px; }
+
+  .marginalia {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--pen);
+    font-size: 16px;
+    line-height: 1.35;
+    margin-top: 10px;
+  }
+  .marginalia::before { content: "↳ "; }
+
+  /* read checkbox — sits in the flow at the end of each entry */
+  .readbox {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--stone);
+    cursor: pointer;
+    user-select: none;
+  }
+  .readbox input {
+    appearance: none;
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--stone);
+    border-radius: 3px;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    background: var(--card);
+  }
+  .readbox input:checked { border-color: var(--pen); background: var(--pen); }
+  .readbox input:checked::after {
+    content: "✓";
+    color: var(--paper);
+    font-size: 12px;
+    line-height: 1;
+  }
+  .entry.is-read h3, .entry.is-read .why { opacity: 0.45; }
+  .entry.is-read .seq { color: var(--rule); }
+
+
+
+  /* ---------- Shelf (themed remainder) ---------- */
+  section.shelf { padding: 64px 0; }
+  .shelf-head { border-top: 3px double var(--ink); padding-top: 18px; margin-bottom: 6px; }
+  .shelf-intro { color: var(--stone); font-size: 17px; max-width: 60ch; margin-bottom: 28px; }
+  .theme-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pen);
+    margin: 34px 0 4px;
+  }
+  ul.shelf-list { list-style: none; }
+  .shelf-item {
+    padding: 14px 0;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    gap: 2px;
+  }
+  .shelf-item .t {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .shelf-item .t a { text-decoration: none; }
+  .shelf-item .t a:hover { border-bottom: 1px solid var(--ink); }
+  .shelf-item .m {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--stone);
+  }
+  .shelf-item .d { font-size: 16px; max-width: 64ch; }
+
+  /* ---------- Footer ---------- */
+  footer { border-top: 1px solid var(--ink); padding: 48px 0 80px; }
+  footer h2 { margin-bottom: 14px; }
+  .concepts { max-width: 66ch; font-size: 18px; }
+  .concepts mark { background: var(--wash); padding: 0 3px; }
+  .colophon {
+    margin-top: 40px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--stone);
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="eyebrow">
+      <span>A self-directed syllabus</span>
+      <span>Compiled July 2026 · 28 readings</span>
+    </div>
+    <h1>The <span class="agentic">Agentic</span> HCI Reader</h1>
+    <p class="deck">Research and practice on designing AI-native software — human-agent interaction, generative UI, and the trust problem — sequenced for a working product designer, not a doctoral seminar.</p>
+    <p class="fieldnote"><strong>Before you start:</strong> in academic HCI, the “fourth wave” usually means <em>Entanglement HCI</em> — post-humanist theory about humans and technology as co-constituted. The applicable design work lives under different names: human-agent interaction, GenUI, agentic UX. This reader covers both threads; the sequence starts with the practical one.</p>
+  </div>
+</header>
+
+<div class="progress">
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;align-items:baseline;">
+    <span><b id="read-count">0</b> / 12 in sequence read</span>
+    <span class="progress-note">Progress resets on refresh — this page keeps nothing.</span>
+  </div>
+</div>
+
+<main>
+
+  <!-- ============ WEEK 1 ============ -->
+  <section class="week" id="week-1">
+    <div class="wrap">
+      <div class="week-head"><span class="week-no">Week 01</span><h2>Orientation</h2></div>
+      <p class="week-intro">Three pieces that establish the vocabulary: what the fourth wave actually claims, what the canonical guidelines already cover, and what changes when AI starts <em>acting</em> instead of suggesting.</p>
+      <ol class="readings" style="--seq-start: 0;">
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://www.wendyzhou.se/blog/what-is-human-ai-entanglement-a-guide-to-fourth-wave-hci-and-agential-realism/" target="_blank" rel="noopener">What is Human-AI Entanglement? A Guide to Fourth Wave HCI and Agential Realism</a></h3>
+            <p class="meta">Wendy Zhou · Essay <span class="tag">Theory</span></p>
+            <p class="why">The most accessible primer on Barad’s agential realism applied to HCI: <mark>humans and AI as entangled, not separate entities that interact</mark>. Read it so the academic thread makes sense later — then set the theory down.</p>
+            <p class="marginalia">start here — one sitting</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 1 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://www.microsoft.com/en-us/haxtoolkit/" target="_blank" rel="noopener">Guidelines for Human-AI Interaction &amp; the HAX Toolkit</a></h3>
+            <p class="meta">Amershi et al. · CHI 2019 + Microsoft HAX Design Library <span class="tag">Foundations</span></p>
+            <p class="why">Eighteen evidence-based guidelines synthesized from 150+ recommendations, organized by phase: initial interaction, in context, <mark>when the AI is wrong</mark>, and over time. The Design Library pairs each with patterns and shipped examples. Still the baseline every agent paper argues against or extends.</p>
+            <p class="marginalia">browse the Design Library, don’t just read the paper</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 2 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://www.smashingmagazine.com/2026/02/designing-agentic-ai-practical-ux-patterns/" target="_blank" rel="noopener">Designing for Agentic AI: Practical UX Patterns for Control, Consent, and Accountability</a></h3>
+            <p class="meta">Victor Yocco · Smashing Magazine, Feb 2026 · 2-part series <span class="tag">Trust &amp; control</span></p>
+            <p class="why">The best practitioner piece on this list. Concrete patterns — the <mark>Autonomy Dial</mark> (progressive authorization: autonomy for low-stakes tasks, confirmation for high-stakes ones), intent previews, accountability frameworks. Autonomy is a technical output; trustworthiness is a design output.</p>
+            <p class="marginalia">maps directly onto approval-policy thinking</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 3 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ WEEK 2 ============ -->
+  <section class="week" id="week-2">
+    <div class="wrap">
+      <div class="week-head"><span class="week-no">Week 02</span><h2>The research core</h2></div>
+      <p class="week-intro">The three 2025–26 studies doing the heaviest lifting right now: agents in business contexts, interfaces generated at runtime, and what breaks when there’s more than one agent.</p>
+      <ol class="readings" style="--seq-start: 3;">
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://arxiv.org/abs/2606.18716" target="_blank" rel="noopener">Human-AI Agent Interaction in a Business Context</a></h3>
+            <p class="meta">arXiv, June 2026 <span class="tag">Human-agent research</span></p>
+            <p class="why">Mixed-methods study — meta-analysis, participatory workshop, survey, interviews, conjoint experiment — building an <mark>empirically validated UX framework for business-critical agents</mark>. Pointedly notes that prior guidelines were validated on consumer products, not enterprise workflows.</p>
+            <p class="marginalia">closest fit to AP/AR &amp; fintech ops</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 4 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://arxiv.org/abs/2503.04084" target="_blank" rel="noopener">Generative and Malleable User Interfaces with Generative and Evolving Task-Driven Data Model</a></h3>
+            <p class="meta">Cao, Jiang &amp; Xia · CHI 2025 <span class="tag">Beyond chat</span></p>
+            <p class="why">The landmark GenUI paper. Instead of generating code, the system generates a <mark>task-driven data model that maps to UI</mark> — so end users reshape the interface through natural language and direct manipulation as their task evolves.</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 5 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://dl.acm.org/doi/10.1145/3715336.3735823" target="_blank" rel="noopener">Designing with Multi-Agent Generative AI: Insights from Industry Early Adopters</a></h3>
+            <p class="meta">DIS 2025 · Microsoft <span class="tag">Multi-agent</span></p>
+            <p class="why">Key finding: the hard design problem isn’t individual agent performance but the <mark>coordination and comprehensibility of the collective system</mark>. Proposes a multi-agent UX toolkit — role-specific guidelines, transparency modules, visual debugging, autonomy-vs-control mechanisms.</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 6 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ WEEK 3 ============ -->
+  <section class="week" id="week-3">
+    <div class="wrap">
+      <div class="week-head"><span class="week-no">Week 03</span><h2>Depth &amp; counterweight</h2></div>
+      <p class="week-intro">Principles, skepticism, and governance. Two of these argue the interface itself is an oversight mechanism; one argues GenUI has debts nobody is pricing in.</p>
+      <ol class="readings" style="--seq-start: 6;">
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://arxiv.org/pdf/2606.20630" target="_blank" rel="noopener">Design Principles for Human-Agent Interaction</a></h3>
+            <p class="meta">arXiv, 2026 <span class="tag">Human-agent research</span></p>
+            <p class="why">A principles paper written specifically for <mark>agentic — not merely generative — systems</mark>. Read it against Amershi 2019 and note what had to change once the system takes actions.</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 7 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://arxiv.org/pdf/2604.16354" target="_blank" rel="noopener">Hidden Technical Debt in Generative (GenUI) and Malleable User Interfaces</a></h3>
+            <p class="meta">arXiv, 2026 <span class="tag">Beyond chat</span></p>
+            <p class="why">The skeptical counterweight to Week 2’s optimism: <mark>what breaks when interfaces are generated at runtime</mark> — consistency, testability, accountability, maintenance.</p>
+            <p class="marginalia">read immediately after № 05</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 8 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://arxiv.org/pdf/2512.00742" target="_blank" rel="noopener">On the Regulatory Potential of User Interfaces for AI Agent Governance</a></h3>
+            <p class="meta">arXiv, 2025 <span class="tag">Trust &amp; control</span></p>
+            <p class="why">Treats UI as a governance layer: visible thought and action traces as oversight, and the <mark>granularity tradeoff</mark> — too little detail undermines oversight, too much overwhelms the user.</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 9 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://arxiv.org/pdf/2602.09286" target="_blank" rel="noopener">Human Control Is the Anchor, Not the Answer: Early Divergence of Oversight in Agentic AI Communities</a></h3>
+            <p class="meta">arXiv, 2026 <span class="tag">Trust &amp; control</span></p>
+            <p class="why">Against one-size-fits-all oversight: operational ecosystems need <mark>permission scoping, traceability, reversibility</mark>; social-facing ones need provenance and identity cues.</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 10 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ ONGOING ============ -->
+  <section class="week" id="ongoing">
+    <div class="wrap">
+      <div class="week-head"><span class="week-no">Ongoing</span><h2>Living indexes</h2></div>
+      <p class="week-intro">Two continuously updated collections to revisit monthly — plus a habit: skim the CHI and DIS proceedings each spring.</p>
+      <ol class="readings" style="--seq-start: 10;">
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://awesomegenerativeui.com/papers" target="_blank" rel="noopener">Awesome Generative UI — Paper Index</a></h3>
+            <p class="meta">Curated collection · updated continuously <span class="tag">Beyond chat</span></p>
+            <p class="why">GenUI papers from Google Research, CHI, DIS, and arXiv — including 2026 work on runtime GenUI for personal agents (A2UI) and personalizing generated interfaces.</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 11 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+        <li class="entry">
+          <span class="seq" aria-hidden="true"></span>
+          <div class="entry-body">
+            <h3><a href="https://agentic-design.ai/patterns/ui-ux-patterns" target="_blank" rel="noopener">Agentic Design Patterns — UI/UX Section</a></h3>
+            <p class="meta">Pattern library · updated continuously <span class="tag">Practitioner</span></p>
+            <p class="why">Patterns for conversational UI beyond chat, multi-agent coordination dashboards, trust and transparency, and adaptive personalization.</p>
+          </div>
+          <label class="readbox"><input type="checkbox" data-seq aria-label="Mark reading 12 as read"><span class="rb-label">Read</span></label>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ SHELF ============ -->
+  <section class="shelf" id="shelf">
+    <div class="wrap">
+      <div class="shelf-head"><h2>After the sequence: the rest of the shelf</h2></div>
+      <p class="shelf-intro">Sixteen further readings, kept in their themes. Pull from here when a project raises the question.</p>
+
+      <p class="theme-label">Theory &amp; the paradigm shift</p>
+      <ul class="shelf-list">
+        <li class="shelf-item">
+          <span class="t"><a href="https://dl.acm.org/doi/10.1145/3364998" target="_blank" rel="noopener">Entanglement HCI: The Next Wave?</a></span>
+          <span class="m">Frauenberger · ACM TOCHI 2019</span>
+          <span class="d">The paper that named the fourth wave — our entanglement with technology challenges HCI’s foundations.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t">UX 3.0</span>
+          <span class="m">Xu · 2024</span>
+          <span class="d">UX 1.0 (PC) → 2.0 (mobile) → 3.0 (AI): ecosystem-wide experiences with explainability, controllability, and ethical alignment as first-class concerns.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t">Human-Centered AI</span>
+          <span class="m">Shneiderman · 2020 paper / 2022 book</span>
+          <span class="d">High automation and high human control are compatible — the foundation of every “oversight of agents” argument.</span>
+        </li>
+      </ul>
+
+      <p class="theme-label">Canonical guidelines</p>
+      <ul class="shelf-list">
+        <li class="shelf-item">
+          <span class="t">Design Principles for Generative AI Applications</span>
+          <span class="m">Weisz et al. · CHI 2024</span>
+          <span class="d">The generative-era update to Amershi: designing with variable, probabilistic output.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t"><a href="https://pair.withgoogle.com/guidebook/" target="_blank" rel="noopener">People + AI Guidebook</a></span>
+          <span class="m">Google PAIR</span>
+          <span class="d">Mental models, trust calibration, feedback, and errors — with practical worksheets.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t">Trust in Automation: Designing for Appropriate Reliance</span>
+          <span class="m">Lee &amp; See · Human Factors, 2004</span>
+          <span class="d">The classic. “Appropriate reliance,” not maximum trust, is the concept everything in the trust theme builds on.</span>
+        </li>
+      </ul>
+
+      <p class="theme-label">Human-agent research</p>
+      <ul class="shelf-list">
+        <li class="shelf-item">
+          <span class="t"><a href="https://arxiv.org/abs/2505.00753" target="_blank" rel="noopener">LLM-Based Human-Agent Collaboration and Interaction Systems: A Survey</a></span>
+          <span class="m">arXiv · 2025</span>
+          <span class="d">A broad map of the collaboration-systems literature — useful for orienting and mining citations.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t">CowPilot: A Framework for Autonomous and Human-Agent Collaborative Web Navigation</span>
+          <span class="m">CMU · NAACL 2025 demo</span>
+          <span class="d">A concrete system exploring handoff between autonomous agent action and human takeover.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t"><a href="https://dl.acm.org/doi/10.1145/3772363.3778737" target="_blank" rel="noopener">Human-AI-UI Interactions Across Modalities</a></span>
+          <span class="m">CHI 2026 workshop</span>
+          <span class="d">A snapshot of where the field is heading: agents that both generate UI and operate UI.</span>
+        </li>
+      </ul>
+
+      <p class="theme-label">Beyond chat</p>
+      <ul class="shelf-list">
+        <li class="shelf-item">
+          <span class="t"><a href="https://dl.acm.org/doi/10.1145/3715336.3735780" target="_blank" rel="noopener">The GenUI Study: Exploring the Design of Generative UI Tools to Support UX Practitioners and Beyond</a></span>
+          <span class="m">Chen, Knearem &amp; Li · DIS 2025</span>
+          <span class="d">What GenUI means for designers’ own workflows and role.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t"><a href="https://www.designative.info/2026/03/23/beyond-the-conversation-trap-designing-for-hybrid-human-agent-interaction-modes/" target="_blank" rel="noopener">Beyond the Conversation Trap: Designing for Hybrid Human-Agent Interaction Modes</a></span>
+          <span class="m">designative.info · March 2026</span>
+          <span class="d">Mixing conversational, visual, and direct-manipulation modes; visualization as an active reasoning component.</span>
+        </li>
+      </ul>
+
+      <p class="theme-label">Multi-agent systems</p>
+      <ul class="shelf-list">
+        <li class="shelf-item">
+          <span class="t"><a href="https://arxiv.org/pdf/2512.11979" target="_blank" rel="noopener">Designing the Internet of Agents: A Framework for Trustworthy, Transparent, and Collaborative Human-Agent Interaction</a></span>
+          <span class="m">arXiv · 2025</span>
+          <span class="d">A framework, SDK, and component library for agent-to-agent ecosystems with humans in the loop.</span>
+        </li>
+      </ul>
+
+      <p class="theme-label">Trust &amp; oversight</p>
+      <ul class="shelf-list">
+        <li class="shelf-item">
+          <span class="t"><a href="https://www.nngroup.com/articles/" target="_blank" rel="noopener">NN/g — State of UX &amp; AI trust research</a></span>
+          <span class="m">Nielsen Norman Group · 2025–26</span>
+          <span class="d">AI adoption is rising while trust is falling — trust as the central design problem. See also their work on “context architecture.”</span>
+        </li>
+      </ul>
+
+      <p class="theme-label">Practitioner sources</p>
+      <ul class="shelf-list">
+        <li class="shelf-item">
+          <span class="t"><a href="https://insights.theinteractive.studio/beyond-the-chat-agentic-interfaces-inside-your-product" target="_blank" rel="noopener">Agentic Interfaces: How to Design AI-Native Products Beyond the Chat</a></span>
+          <span class="m">The Interactive Studio · 2026</span>
+          <span class="d">Three in-product patterns: inline microinteractions, agent side panels with audit trails, and proactive nudges that silence themselves when ignored.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t"><a href="https://uxdesign.cc/the-rulebook-for-designing-ai-experiences-a22a50bb063c" target="_blank" rel="noopener">The Rulebook for Designing AI Experiences</a></span>
+          <span class="m">UX Collective · April 2026</span>
+          <span class="d">A guided tour of HAX and Weisz’s principles — and how to actually put them to work.</span>
+        </li>
+        <li class="shelf-item">
+          <span class="t"><a href="https://cltc.berkeley.edu/publication/ux-design-considerations-for-human-ai-agent-interaction/" target="_blank" rel="noopener">UX Design Considerations for Human-AI Agent Interaction</a></span>
+          <span class="m">UC Berkeley CLTC</span>
+          <span class="d">Research project producing design recommendations on control loss and transparency in autonomous agents.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <h2>Concepts to track across everything</h2>
+    <p class="concepts"><mark>Appropriate reliance</mark> and trust calibration · progressive autonomy and <mark>autonomy dials</mark> · intent previews and plan editing · transparency granularity · <mark>reversibility and audit trails</mark> · the shift from designing screens to designing <em>policies for agent behavior</em>.</p>
+    <p class="colophon">The Agentic HCI Reader · compiled July 2026 · set in Fraunces, Newsreader &amp; IBM Plex Mono<br>Sequence: Week 1 orientation → Week 2 research core → Week 3 depth → ongoing indexes → themed shelf.</p>
+  </div>
+</footer>
+
+<script>
+  // In-memory read tracking only — nothing is stored between visits.
+  const boxes = document.querySelectorAll('input[data-seq]');
+  const count = document.getElementById('read-count');
+  boxes.forEach(box => {
+    box.addEventListener('change', () => {
+      box.closest('.entry').classList.toggle('is-read', box.checked);
+      count.textContent = document.querySelectorAll('input[data-seq]:checked').length;
+    });
+  });
+</script>
+
+</body>
+</html>
